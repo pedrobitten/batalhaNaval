@@ -3,7 +3,6 @@ package View;
 import java.awt.Color;
 import java.awt.geom.Rectangle2D;
 
-//Classe interna para representar uma arma
 class Arma {
     Rectangle2D shape;
     int length;

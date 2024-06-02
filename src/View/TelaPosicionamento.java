@@ -49,7 +49,7 @@ public class TelaPosicionamento extends JPanel implements MouseListener, MouseMo
         armasDisponiveis = new ArrayList<>();
         inicializarArmas();
 
-        armasPanel.addMouseListener(this); // Adicionar mouse listener para o painel de armas
+        armasPanel.addMouseListener(this);
 
         JPanel tabuleiroPanel = new JPanel() {
             @Override
@@ -62,8 +62,8 @@ public class TelaPosicionamento extends JPanel implements MouseListener, MouseMo
         };
 
         tabuleiroPanel.setPreferredSize(new Dimension(GRID_SIZE * TILE_SIZE, GRID_SIZE * TILE_SIZE)); // Insere o tabuleiro
-        tabuleiroPanel.addMouseListener(this); // Insere o mouse no painel
-        tabuleiroPanel.addMouseMotionListener(this); // Mouse-motion event
+        tabuleiroPanel.addMouseListener(this);
+        tabuleiroPanel.addMouseMotionListener(this);
 
         passarVezButton = new JButton("Passar Vez");
         passarVezButton.setEnabled(false); // Desabilitado até que todas as armas sejam posicionadas

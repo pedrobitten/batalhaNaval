@@ -31,7 +31,6 @@ public class TelaMenu extends JFrame {
                 int result = fileChooser.showOpenDialog(null);
                 if (result == JFileChooser.APPROVE_OPTION) {
                     File selectedFile = fileChooser.getSelectedFile();
-                    // Lógica para carregar o estado do jogo do arquivo selecionado
                     carregarJogo(selectedFile);
                 }
             }
@@ -45,13 +44,9 @@ public class TelaMenu extends JFrame {
     }
 
     private void carregarJogo(File file) {
-        // Lógica para carregar o estado do jogo do arquivo selecionado
-        // Por exemplo, você pode ler o arquivo e inicializar o estado do jogo
         JOptionPane.showMessageDialog(this, "Carregando o jogo do arquivo: " + file.getAbsolutePath());
-        // Exemplo de lógica para iniciar a tela de posicionamento com estado carregado
-        // Isso deve ser substituído pela lógica real de carregamento
-        String jogador1 = "Jogador 1"; // Substituir pela lógica real de carregamento
-        String jogador2 = "Jogador 2"; // Substituir pela lógica real de carregamento
+        String jogador1 = "Jogador 1";
+        String jogador2 = "Jogador 2";
         new TelaPosicionamento(jogador1, jogador2); // Passar o estado carregado
         dispose();
     }
