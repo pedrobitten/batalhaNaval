@@ -1,9 +1,7 @@
 package View;
 
-import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
+import javax.swing.*;
 
 public class TelaMenu extends JFrame {
     public TelaMenu() {
@@ -16,23 +14,17 @@ public class TelaMenu extends JFrame {
         JButton newGameButton = new JButton("Novo Jogo");
         JButton continueGameButton = new JButton("Continuar Jogo");
 
-        newGameButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new TelaInicio();
-                dispose();
-            }
+        newGameButton.addActionListener(e -> {
+            new TelaInicio();
+            dispose();
         });
 
-        continueGameButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JFileChooser fileChooser = new JFileChooser();
-                int result = fileChooser.showOpenDialog(null);
-                if (result == JFileChooser.APPROVE_OPTION) {
-                    File selectedFile = fileChooser.getSelectedFile();
-                    carregarJogo(selectedFile);
-                }
+        continueGameButton.addActionListener(e -> {
+            JFileChooser fileChooser = new JFileChooser();
+            int result = fileChooser.showOpenDialog(null);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                File selectedFile = fileChooser.getSelectedFile();
+                carregarJogo(selectedFile);
             }
         });
 
@@ -45,10 +37,10 @@ public class TelaMenu extends JFrame {
 
     private void carregarJogo(File file) {
         JOptionPane.showMessageDialog(this, "Carregando o jogo do arquivo: " + file.getAbsolutePath());
+
         String jogador1 = "Jogador 1";
         String jogador2 = "Jogador 2";
         new TelaPosicionamento(jogador1, jogador2); // Passar o estado carregado
         dispose();
     }
-
 }

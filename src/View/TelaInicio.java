@@ -74,5 +74,4 @@ public class TelaInicio extends JFrame {
         frame.setVisible(true);
         dispose();
     }
-
 }

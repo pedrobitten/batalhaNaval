@@ -1,30 +1,25 @@
 package View;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
+import javax.swing.*;
 
 public class TelaPosicionamento extends JPanel implements MouseListener, MouseMotionListener, KeyListener {
     private static final int TILE_SIZE = 30; // Tamanho de cada quadrado do tabuleiro
     private static final int GRID_SIZE = 15; // Tamanho do tabuleiro 15x15
-    private String jogador1, jogador2;
-    private JPanel armasPanel;
+    private final JPanel armasPanel;
     private int[][] grid; // Matriz para armazenar o estado das células do tabuleiro
-    private int[][] gridJogador1; // Matriz para armazenar o estado do tabuleiro do jogador 1
+    private final int[][] gridJogador1; // Matriz para armazenar o estado do tabuleiro do jogador 1
     private boolean isSelected;
-    private int selectedX, selectedY; // Coordenadas da célula selecionada
-    private ArrayList<Arma> armasDisponiveis; // Lista de armas disponíveis
+    private final ArrayList<Arma> armasDisponiveis; // Lista de armas disponíveis
     private Arma armaSelecionada; // Arma selecionada
     private boolean horizontal; // Orientação da arma
-    private JButton passarVezButton;
+    private final JButton passarVezButton;
     private boolean jogador1Posicionou; // Flag para verificar se o jogador 1 já posicionou suas embarcações
 
-    
     public TelaPosicionamento(String jogador1, String jogador2) {
-        this.jogador1 = jogador1;
-        this.jogador2 = jogador2;
         grid = new int[GRID_SIZE][GRID_SIZE];
         gridJogador1 = new int[GRID_SIZE][GRID_SIZE];
         isSelected = false;
@@ -67,22 +62,19 @@ public class TelaPosicionamento extends JPanel implements MouseListener, MouseMo
 
         passarVezButton = new JButton("Passar Vez");
         passarVezButton.setEnabled(false); // Desabilitado até que todas as armas sejam posicionadas
-        passarVezButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (!jogador1Posicionou) {
-                    // Jogador 1 posicionou todas as embarcações, salvar tabuleiro e limpar para o jogador 2
-                    JOptionPane.showMessageDialog(null, "Passe a vez para o próximo jogador.");
-                    salvarTabuleiroJogador1();
-                    grid = new int[GRID_SIZE][GRID_SIZE]; // Limpar o tabuleiro
-                    inicializarArmas(); // Recarregar as armas para o segundo jogador
-                    passarVezButton.setEnabled(false);
-                    jogador1Posicionou = true;
-                    repaint();
-                } else {
-                    // Jogador 2 posicionou todas as embarcações, iniciar o jogo
-                    JOptionPane.showMessageDialog(null, "Todos os jogadores posicionaram suas embarcações. Iniciar o jogo!");
-                }
+        passarVezButton.addActionListener(e -> {
+            if (!jogador1Posicionou) {
+                // Jogador 1 posicionou todas as embarcações, salvar tabuleiro e limpar para o jogador 2
+                JOptionPane.showMessageDialog(null, "Passe a vez para o próximo jogador.");
+                salvarTabuleiroJogador1();
+                resetGrid();
+                inicializarArmas(); // Recarregar as armas para o segundo jogador
+                passarVezButton.setEnabled(false);
+                jogador1Posicionou = true;
+                repaint();
+            } else {
+                // Jogador 2 posicionou todas as embarcações, iniciar o jogo
+                JOptionPane.showMessageDialog(null, "Todos os jogadores posicionaram suas embarcações. Iniciar o jogo!");
             }
         });
 
@@ -124,8 +116,14 @@ public class TelaPosicionamento extends JPanel implements MouseListener, MouseMo
 
     private void salvarTabuleiroJogador1() {
         for (int i = 0; i < GRID_SIZE; i++) {
+            System.arraycopy(grid[i], 0, gridJogador1[i], 0, GRID_SIZE);
+        }
+    }
+
+    private void resetGrid() {
+        for (int i = 0; i < GRID_SIZE; i++) {
             for (int j = 0; j < GRID_SIZE; j++) {
-                gridJogador1[i][j] = grid[i][j];
+                grid[i][j] = 0;
             }
         }
     }
@@ -149,7 +147,6 @@ public class TelaPosicionamento extends JPanel implements MouseListener, MouseMo
         }
     }
 
-    
     private void drawArmasDisponiveis(Graphics2D g2d) {
         for (Arma arma : armasDisponiveis) {
             if (arma.equals(armaSelecionada)) {
@@ -243,8 +240,6 @@ public class TelaPosicionamento extends JPanel implements MouseListener, MouseMo
             int y = e.getY() / TILE_SIZE;
             if (x < GRID_SIZE && y < GRID_SIZE) {
                 isSelected = true;
-                selectedX = x;
-                selectedY = y;
                 if (armaSelecionada != null) {
                     posicionarArma(x, y);
                 }

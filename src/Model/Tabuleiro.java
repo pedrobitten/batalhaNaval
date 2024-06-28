@@ -1,18 +1,19 @@
 package Model;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Tabuleiro {
-    private int[][] tabuleiro_P1 = new int[15][15];
-    private int[][] tabuleiro_P2 = new int[15][15];
+    private final int[][] tabuleiro_P1 = new int[15][15];
+    private final int[][] tabuleiro_P2 = new int[15][15];
 
     public void criacaoTabuleiros() {
-        for (int i = 0; i < tabuleiro_P1.length; i++) {
-            for (int j = 0; j < tabuleiro_P1[i].length; j++) {
-                tabuleiro_P1[i][j] = 0;
-                tabuleiro_P2[i][j] = 0;
-            }
+        for (int[] row : tabuleiro_P1) {
+            Arrays.fill(row, 0);
+        }
+        for (int[] row : tabuleiro_P2) {
+            Arrays.fill(row, 0);
         }
     }
 
@@ -28,9 +29,9 @@ public class Tabuleiro {
 
     private void imprimirTabuleiro(int[][] tabuleiro) {
         for (int i = 0; i < tabuleiro.length; i++) {
-            System.out.printf("%c ", 'A' + i);
-            for (int j = 0; j < tabuleiro[i].length; j++) {
-                System.out.printf("%d ", tabuleiro[i][j]);
+            System.out.printf("%d ", 'A' + i);  // Corrigir para %d
+            for (int cell : tabuleiro[i]) {
+                System.out.printf("%d ", cell);
             }
             System.out.println();
         }
@@ -58,9 +59,9 @@ public class Tabuleiro {
 
     public boolean verificarDerrota(char jogador) {
         int[][] tabuleiro = (jogador == '1') ? tabuleiro_P1 : tabuleiro_P2;
-        for (int i = 0; i < tabuleiro.length; i++) {
-            for (int j = 0; j < tabuleiro[i].length; j++) {
-                if (tabuleiro[i][j] > 0) {
+        for (int[] row : tabuleiro) {
+            for (int cell : row) {
+                if (cell > 0) {
                     return false; // Ainda existem partes de navios não atingidos
                 }
             }
@@ -70,16 +71,16 @@ public class Tabuleiro {
 
     public void salvarEstado(String arquivo) {
         try (PrintWriter out = new PrintWriter(new FileWriter(arquivo))) {
-            for (int i = 0; i < tabuleiro_P1.length; i++) {
-                for (int j = 0; j < tabuleiro_P1[i].length; j++) {
-                    out.print(tabuleiro_P1[i][j] + " ");
+            for (int[] row : tabuleiro_P1) {
+                for (int cell : row) {
+                    out.print(cell + " ");
                 }
                 out.println();
             }
             out.println(); // Separar os tabuleiros
-            for (int i = 0; i < tabuleiro_P2.length; i++) {
-                for (int j = 0; j < tabuleiro_P2[i].length; j++) {
-                    out.print(tabuleiro_P2[i][j] + " ");
+            for (int[] row : tabuleiro_P2) {
+                for (int cell : row) {
+                    out.print(cell + " ");
                 }
                 out.println();
             }
@@ -90,17 +91,17 @@ public class Tabuleiro {
 
     public void carregarEstado(String arquivo) {
         try (Scanner scanner = new Scanner(new File(arquivo))) {
-            for (int i = 0; i < tabuleiro_P1.length; i++) {
-                for (int j = 0; j < tabuleiro_P1[i].length; j++) {
+            for (int[] row : tabuleiro_P1) {
+                for (int j = 0; j < row.length; j++) {
                     if (scanner.hasNextInt()) {
-                        tabuleiro_P1[i][j] = scanner.nextInt();
+                        row[j] = scanner.nextInt();
                     }
                 }
             }
-            for (int i = 0; i < tabuleiro_P2.length; i++) {
-                for (int j = 0; j < tabuleiro_P2[i].length; j++) {
+            for (int[] row : tabuleiro_P2) {
+                for (int j = 0; j < row.length; j++) {
                     if (scanner.hasNextInt()) {
-                        tabuleiro_P2[i][j] = scanner.nextInt();
+                        row[j] = scanner.nextInt();
                     }
                 }
             }
