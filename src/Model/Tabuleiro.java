@@ -29,7 +29,7 @@ public class Tabuleiro {
 
     private void imprimirTabuleiro(int[][] tabuleiro) {
         for (int i = 0; i < tabuleiro.length; i++) {
-            System.out.printf("%d ", 'A' + i);  // Corrigir para %d
+            System.out.printf("%c ", 'A' + i);
             for (int cell : tabuleiro[i]) {
                 System.out.printf("%d ", cell);
             }

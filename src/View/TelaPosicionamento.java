@@ -1,5 +1,6 @@
 package View;
 
+import Model.Tabuleiro;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
@@ -7,19 +8,22 @@ import java.util.ArrayList;
 import javax.swing.*;
 
 public class TelaPosicionamento extends JPanel implements MouseListener, MouseMotionListener, KeyListener {
-    private static final int TILE_SIZE = 30; // Tamanho de cada quadrado do tabuleiro
-    private static final int GRID_SIZE = 15; // Tamanho do tabuleiro 15x15
+    private static final int TILE_SIZE = 30;
+    private static final int GRID_SIZE = 15;
     private final JPanel armasPanel;
-    private int[][] grid; // Matriz para armazenar o estado das células do tabuleiro
-    private final int[][] gridJogador1; // Matriz para armazenar o estado do tabuleiro do jogador 1
+    private int[][] grid;
+    private final int[][] gridJogador1;
     private boolean isSelected;
-    private final ArrayList<Arma> armasDisponiveis; // Lista de armas disponíveis
-    private Arma armaSelecionada; // Arma selecionada
-    private boolean horizontal; // Orientação da arma
+    private final ArrayList<Arma> armasDisponiveis;
+    private Arma armaSelecionada;
+    private boolean horizontal;
     private final JButton passarVezButton;
-    private boolean jogador1Posicionou; // Flag para verificar se o jogador 1 já posicionou suas embarcações
+    private boolean jogador1Posicionou;
+    private final Tabuleiro tabuleiro;
 
     public TelaPosicionamento(String jogador1, String jogador2) {
+        this.tabuleiro = new Tabuleiro();
+        tabuleiro.criacaoTabuleiros();
         grid = new int[GRID_SIZE][GRID_SIZE];
         gridJogador1 = new int[GRID_SIZE][GRID_SIZE];
         isSelected = false;
@@ -28,7 +32,6 @@ public class TelaPosicionamento extends JPanel implements MouseListener, MouseMo
 
         setLayout(new BorderLayout());
 
-        // Parte que referencia a área das embarcações
         armasPanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -40,7 +43,6 @@ public class TelaPosicionamento extends JPanel implements MouseListener, MouseMo
         armasPanel.setPreferredSize(new Dimension(600, GRID_SIZE * TILE_SIZE));
         armasPanel.setBackground(Color.LIGHT_GRAY);
 
-        // Inicializar as armas disponíveis
         armasDisponiveis = new ArrayList<>();
         inicializarArmas();
 
@@ -51,36 +53,35 @@ public class TelaPosicionamento extends JPanel implements MouseListener, MouseMo
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 Graphics2D g2d = (Graphics2D) g;
-                drawGrid(g2d); // Desenha tabuleiro
-                drawShips(g2d); // Desenha as embarcações no tabuleiro
+                drawGrid(g2d);
+                drawShips(g2d);
             }
         };
 
-        tabuleiroPanel.setPreferredSize(new Dimension(GRID_SIZE * TILE_SIZE, GRID_SIZE * TILE_SIZE)); // Insere o tabuleiro
+        tabuleiroPanel.setPreferredSize(new Dimension(GRID_SIZE * TILE_SIZE, GRID_SIZE * TILE_SIZE));
         tabuleiroPanel.addMouseListener(this);
         tabuleiroPanel.addMouseMotionListener(this);
 
         passarVezButton = new JButton("Passar Vez");
-        passarVezButton.setEnabled(false); // Desabilitado até que todas as armas sejam posicionadas
+        passarVezButton.setEnabled(false);
         passarVezButton.addActionListener(e -> {
             if (!jogador1Posicionou) {
-                // Jogador 1 posicionou todas as embarcações, salvar tabuleiro e limpar para o jogador 2
                 JOptionPane.showMessageDialog(null, "Passe a vez para o próximo jogador.");
                 salvarTabuleiroJogador1();
-                resetGrid();
-                inicializarArmas(); // Recarregar as armas para o segundo jogador
+                grid = new int[GRID_SIZE][GRID_SIZE];
+                inicializarArmas();
                 passarVezButton.setEnabled(false);
                 jogador1Posicionou = true;
                 repaint();
             } else {
-                // Jogador 2 posicionou todas as embarcações, iniciar o jogo
                 JOptionPane.showMessageDialog(null, "Todos os jogadores posicionaram suas embarcações. Iniciar o jogo!");
+                iniciarEtapaDeAtaques();
             }
         });
 
-        add(armasPanel, BorderLayout.WEST); // Adiciona o painel das armas no oeste
-        add(tabuleiroPanel, BorderLayout.CENTER); // Adiciona o painel do tabuleiro no centro
-        add(passarVezButton, BorderLayout.SOUTH); // Adiciona o painel de passar a vez no sul
+        add(armasPanel, BorderLayout.WEST);
+        add(tabuleiroPanel, BorderLayout.CENTER);
+        add(passarVezButton, BorderLayout.SOUTH);
         addKeyListener(this);
         setFocusable(true);
         requestFocusInWindow();
@@ -89,42 +90,29 @@ public class TelaPosicionamento extends JPanel implements MouseListener, MouseMo
     private void inicializarArmas() {
         armasDisponiveis.clear();
 
-        // Desenhar hidroaviões
         int[][] offsetsHidroaviao = {{0, 0}, {-1, 1}, {1, 1}};
         for (int i = 0; i < 5; i++) {
             armasDisponiveis.add(new Arma(new Rectangle2D.Double(35 + i * 120, 10, TILE_SIZE, TILE_SIZE), 3, Color.YELLOW, offsetsHidroaviao));
         }
 
-        // Desenhar submarinos
         for (int i = 0; i < 4; i++) {
             armasDisponiveis.add(new Arma(new Rectangle2D.Double(10 + i * 40, 90, TILE_SIZE, TILE_SIZE), 1, Color.WHITE, new int[][]{{0, 0}}));
         }
 
-        // Desenhar destroyers
         for (int i = 0; i < 3; i++) {
             armasDisponiveis.add(new Arma(new Rectangle2D.Double(10 + i * 70, 130, TILE_SIZE * 2, TILE_SIZE), 2, Color.CYAN, new int[][]{{0, 0}, {1, 0}}));
         }
 
-        // Desenhar cruzadores
         for (int i = 0; i < 2; i++) {
             armasDisponiveis.add(new Arma(new Rectangle2D.Double(10 + i * 130, 170, TILE_SIZE * 4, TILE_SIZE), 4, Color.MAGENTA, new int[][]{{0, 0}, {1, 0}, {2, 0}, {3, 0}}));
         }
 
-        // Desenhar couraçado
         armasDisponiveis.add(new Arma(new Rectangle2D.Double(10, 210, TILE_SIZE * 5, TILE_SIZE), 5, Color.BLACK, new int[][]{{0, 0}, {1, 0}, {2, 0}, {3, 0}, {4, 0}}));
     }
 
     private void salvarTabuleiroJogador1() {
         for (int i = 0; i < GRID_SIZE; i++) {
             System.arraycopy(grid[i], 0, gridJogador1[i], 0, GRID_SIZE);
-        }
-    }
-
-    private void resetGrid() {
-        for (int i = 0; i < GRID_SIZE; i++) {
-            for (int j = 0; j < GRID_SIZE; j++) {
-                grid[i][j] = 0;
-            }
         }
     }
 
@@ -136,10 +124,9 @@ public class TelaPosicionamento extends JPanel implements MouseListener, MouseMo
     }
 
     private void drawShips(Graphics2D g2d) {
-        // Desenhar as armas (embarcações) no tabuleiro
         for (int i = 0; i < GRID_SIZE; i++) {
             for (int j = 0; j < GRID_SIZE; j++) {
-                if (grid[i][j] > 0) { // Célula ocupada por uma embarcação
+                if (grid[i][j] > 0) {
                     g2d.setColor(Color.ORANGE);
                     g2d.fill(new Rectangle2D.Double(i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE, TILE_SIZE));
                 }
@@ -150,9 +137,9 @@ public class TelaPosicionamento extends JPanel implements MouseListener, MouseMo
     private void drawArmasDisponiveis(Graphics2D g2d) {
         for (Arma arma : armasDisponiveis) {
             if (arma.equals(armaSelecionada)) {
-                g2d.setColor(Color.GREEN); // Cor para indicar arma selecionada
+                g2d.setColor(Color.GREEN);
             } else {
-                g2d.setColor(arma.color); // Cor específica da arma
+                g2d.setColor(arma.color);
             }
             for (int[] offset : arma.offsets) {
                 g2d.fill(new Rectangle2D.Double(arma.shape.getX() + offset[0] * TILE_SIZE, arma.shape.getY() + offset[1] * TILE_SIZE, TILE_SIZE, TILE_SIZE));
@@ -208,10 +195,20 @@ public class TelaPosicionamento extends JPanel implements MouseListener, MouseMo
         verificarPosicionamentoCompleto();
     }
 
+    private void iniciarEtapaDeAtaques() {
+        JOptionPane.showMessageDialog(this, "Iniciando a etapa de ataques!");
+        JFrame frame = new JFrame("Ataques - Jogador 1");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.add(new TelaAtaques(tabuleiro, '1'));
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+        SwingUtilities.getWindowAncestor(this).dispose();
+    }
+
     @Override
     public void mouseClicked(MouseEvent e) {
         if (SwingUtilities.isRightMouseButton(e) && isSelected) {
-            // Implementar a lógica de rotação das armas
             horizontal = !horizontal;
             repaint();
         }
@@ -222,7 +219,6 @@ public class TelaPosicionamento extends JPanel implements MouseListener, MouseMo
         Point point = e.getPoint();
         boolean found = false;
 
-        // Verificar se o clique foi em uma arma disponível
         for (Arma arma : armasDisponiveis) {
             if (arma.shape.contains(point) && e.getSource() == armasPanel) {
                 armaSelecionada = arma;
@@ -235,7 +231,6 @@ public class TelaPosicionamento extends JPanel implements MouseListener, MouseMo
         }
 
         if (!found && e.getSource() != armasPanel) {
-            // Verificar se o clique foi sobre o tabuleiro
             int x = e.getX() / TILE_SIZE;
             int y = e.getY() / TILE_SIZE;
             if (x < GRID_SIZE && y < GRID_SIZE) {
@@ -266,7 +261,6 @@ public class TelaPosicionamento extends JPanel implements MouseListener, MouseMo
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            // Confirmar o posicionamento da arma
             armaSelecionada = null;
             isSelected = false;
             repaint();
