@@ -1,12 +1,12 @@
 package View;
 
 import Model.Tabuleiro;
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
 
 public class TelaAtaques extends JPanel {
     private final Tabuleiro tabuleiro;
-    private final char jogadorAtual;
+    private char jogadorAtual;
 
     public TelaAtaques(Tabuleiro tabuleiro, char jogadorAtual) {
         this.tabuleiro = tabuleiro;
@@ -33,7 +33,7 @@ public class TelaAtaques extends JPanel {
     }
 
     private void realizarAtaque(char linha, int coluna, JButton cellButton) {
-        String resultado = tabuleiro.atacar(linha, coluna, jogadorAtual);
+        String resultado = tabuleiro.atacar(linha, coluna, jogadorAtual == '1' ? '2' : '1');
         cellButton.setText(resultado.equals("Hit!") ? "X" : "O");
         cellButton.setEnabled(false);
 
@@ -52,10 +52,10 @@ public class TelaAtaques extends JPanel {
     }
 
     private void trocarJogador() {
-        char proximoJogador = (jogadorAtual == '1') ? '2' : '1';
-        JFrame frame = new JFrame("Ataques - Jogador " + proximoJogador);
+        jogadorAtual = (jogadorAtual == '1') ? '2' : '1';
+        JFrame frame = new JFrame("Ataques - Jogador " + jogadorAtual);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.add(new TelaAtaques(tabuleiro, proximoJogador));
+        frame.add(new TelaAtaques(tabuleiro, jogadorAtual));
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);

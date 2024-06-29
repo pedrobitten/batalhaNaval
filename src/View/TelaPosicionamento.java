@@ -1,5 +1,6 @@
 package View;
 
+import Model.Arma;
 import Model.Tabuleiro;
 import java.awt.*;
 import java.awt.event.*;
@@ -16,7 +17,7 @@ public class TelaPosicionamento extends JPanel implements MouseListener, MouseMo
     private boolean isSelected;
     private final ArrayList<Arma> armasDisponiveis;
     private Arma armaSelecionada;
-    private boolean horizontal;
+    private int currentRotation; // Controle de rotação
     private final JButton passarVezButton;
     private boolean jogador1Posicionou;
     private final Tabuleiro tabuleiro;
@@ -27,7 +28,7 @@ public class TelaPosicionamento extends JPanel implements MouseListener, MouseMo
         grid = new int[GRID_SIZE][GRID_SIZE];
         gridJogador1 = new int[GRID_SIZE][GRID_SIZE];
         isSelected = false;
-        horizontal = true;
+        currentRotation = 0;
         jogador1Posicionou = false;
 
         setLayout(new BorderLayout());
@@ -142,15 +143,49 @@ public class TelaPosicionamento extends JPanel implements MouseListener, MouseMo
                 g2d.setColor(arma.color);
             }
             for (int[] offset : arma.offsets) {
-                g2d.fill(new Rectangle2D.Double(arma.shape.getX() + offset[0] * TILE_SIZE, arma.shape.getY() + offset[1] * TILE_SIZE, TILE_SIZE, TILE_SIZE));
+                int x = offset[0];
+                int y = offset[1];
+                switch (currentRotation) {
+                    case 90:
+                        x = offset[1];
+                        y = -offset[0];
+                        break;
+                    case 180:
+                        x = -offset[0];
+                        y = -offset[1];
+                        break;
+                    case 270:
+                        x = -offset[1];
+                        y = offset[0];
+                        break;
+                }
+                g2d.fill(new Rectangle2D.Double(arma.shape.getX() + x * TILE_SIZE, arma.shape.getY() + y * TILE_SIZE, TILE_SIZE, TILE_SIZE));
             }
         }
     }
 
     private boolean canPlaceArma(int x, int y) {
         for (int[] offset : armaSelecionada.offsets) {
-            int newX = x + (horizontal ? offset[0] : offset[1]);
-            int newY = y + (horizontal ? offset[1] : offset[0]);
+            int newX = x;
+            int newY = y;
+            switch (currentRotation) {
+                case 90:
+                    newX += offset[1];
+                    newY -= offset[0];
+                    break;
+                case 180:
+                    newX -= offset[0];
+                    newY -= offset[1];
+                    break;
+                case 270:
+                    newX -= offset[1];
+                    newY += offset[0];
+                    break;
+                default:
+                    newX += offset[0];
+                    newY += offset[1];
+                    break;
+            }
             if (newX >= GRID_SIZE || newY >= GRID_SIZE || newX < 0 || newY < 0 || grid[newX][newY] > 0) {
                 return false;
             }
@@ -161,8 +196,26 @@ public class TelaPosicionamento extends JPanel implements MouseListener, MouseMo
     private void highlightInvalidPosition(Graphics2D g2d, int x, int y) {
         g2d.setColor(Color.RED);
         for (int[] offset : armaSelecionada.offsets) {
-            int newX = x + (horizontal ? offset[0] : offset[1]);
-            int newY = y + (horizontal ? offset[1] : offset[0]);
+            int newX = x;
+            int newY = y;
+            switch (currentRotation) {
+                case 90:
+                    newX += offset[1];
+                    newY -= offset[0];
+                    break;
+                case 180:
+                    newX -= offset[0];
+                    newY -= offset[1];
+                    break;
+                case 270:
+                    newX -= offset[1];
+                    newY += offset[0];
+                    break;
+                default:
+                    newX += offset[0];
+                    newY += offset[1];
+                    break;
+            }
             g2d.fillRect(newX * TILE_SIZE, newY * TILE_SIZE, TILE_SIZE, TILE_SIZE);
         }
     }
@@ -182,14 +235,33 @@ public class TelaPosicionamento extends JPanel implements MouseListener, MouseMo
         }
 
         for (int[] offset : armaSelecionada.offsets) {
-            int newX = x + (horizontal ? offset[0] : offset[1]);
-            int newY = y + (horizontal ? offset[1] : offset[0]);
+            int newX = x;
+            int newY = y;
+            switch (currentRotation) {
+                case 90:
+                    newX += offset[1];
+                    newY -= offset[0];
+                    break;
+                case 180:
+                    newX -= offset[0];
+                    newY -= offset[1];
+                    break;
+                case 270:
+                    newX -= offset[1];
+                    newY += offset[0];
+                    break;
+                default:
+                    newX += offset[0];
+                    newY += offset[1];
+                    break;
+            }
             grid[newX][newY] = armaSelecionada.length;
         }
 
         armasDisponiveis.remove(armaSelecionada);
         armaSelecionada = null;
         isSelected = false;
+        currentRotation = 0;
         repaint();
         JOptionPane.showMessageDialog(null, "Arma posicionada com sucesso.");
         verificarPosicionamentoCompleto();
@@ -209,7 +281,7 @@ public class TelaPosicionamento extends JPanel implements MouseListener, MouseMo
     @Override
     public void mouseClicked(MouseEvent e) {
         if (SwingUtilities.isRightMouseButton(e) && isSelected) {
-            horizontal = !horizontal;
+            currentRotation = (currentRotation + 90) % 360;
             repaint();
         }
     }
