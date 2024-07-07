@@ -2,7 +2,7 @@ package Model;
 
 public class Destroyer extends Embarcacao {
     public Destroyer(char direcao) {
-        super(2, direcao);
+        super(2, direcao); // Tamanho do destroyer é 2
     }
 
     @Override

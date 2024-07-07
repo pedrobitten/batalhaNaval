@@ -4,20 +4,13 @@ public class Hidroaviao extends Embarcacao {
     public Hidroaviao() {
         super(3, 'H'); // Inicialmente disposto horizontalmente
     }
+    
+    public Hidroaviao(char direcao) {
+        super(3, direcao); // Construtor que aceita a direção
+    }
 
     @Override
     public boolean posicionar(char linha, int coluna, int[][] tabuleiro) {
-        int indice_linha = linha - 'A';
-
-        if (indice_linha + 1 < tabuleiro.length && coluna - 1 >= 0 && coluna + 1 < tabuleiro[0].length) {
-            if (tabuleiro[indice_linha][coluna] == 0 && tabuleiro[indice_linha + 1][coluna - 1] == 0
-                    && tabuleiro[indice_linha + 1][coluna + 1] == 0) {
-                tabuleiro[indice_linha][coluna] = 5; // Centro
-                tabuleiro[indice_linha + 1][coluna - 1] = 5; // Esquerda
-                tabuleiro[indice_linha + 1][coluna + 1] = 5; // Direita
-                return true;
-            }
-        }
-        return false;
+        return checkAndPlace(linha, coluna, tabuleiro, 2); // O código '2' representa um hidroavião
     }
 }

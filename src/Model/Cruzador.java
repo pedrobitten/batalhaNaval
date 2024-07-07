@@ -2,7 +2,7 @@ package Model;
 
 public class Cruzador extends Embarcacao {
     public Cruzador(char direcao) {
-        super(4, direcao);
+        super(4, direcao); // Tamanho do cruzador é 4
     }
 
     @Override

@@ -7,12 +7,6 @@ public class Submarino extends Embarcacao {
 
     @Override
     public boolean posicionar(char linha, int coluna, int[][] tabuleiro) {
-        int indice_linha = linha - 'A';
-
-        if (tabuleiro[indice_linha][coluna] == 0) {
-            tabuleiro[indice_linha][coluna] = 2; // O código '2' representa um submarino
-            return true;
-        }
-        return false;
+        return checkAndPlace(linha, coluna, tabuleiro, 5); // O código '5' representa um submarino
     }
 }

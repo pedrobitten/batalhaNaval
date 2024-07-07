@@ -1,9 +1,9 @@
 package Model;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Tabuleiro {
@@ -77,6 +77,11 @@ public class Tabuleiro {
             }
         }
         return true; // Todos os navios foram destruídos
+    }
+
+    // Adicione este método
+    public boolean jogadorPerdeu(char jogador) {
+        return verificarDerrota(jogador);
     }
 
     public void salvarEstado(String arquivo) {

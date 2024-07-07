@@ -1,14 +1,14 @@
 package View;
 
+import Controller.GameController;
 import Model.Arma;
-import Model.Tabuleiro;
 import Model.Observer;
+import Model.Tabuleiro;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import javax.swing.*;
-import Controller.GameController;
 
 public class TelaPosicionamento extends JPanel implements MouseListener, MouseMotionListener, KeyListener, Observer {
     private static final int TILE_SIZE = 30;
@@ -266,6 +266,7 @@ public class TelaPosicionamento extends JPanel implements MouseListener, MouseMo
                     newY += offset[1];
                     break;
             }
+            System.out.println("Posicionando em: " + newX + ", " + newY); // Adicione este print para depuração
             grid[newX][newY] = armaSelecionada.length;
         }
 

@@ -2,7 +2,7 @@ package Model;
 
 public class Couracado extends Embarcacao {
     public Couracado(char direcao) {
-        super(5, direcao);
+        super(5, direcao); // Tamanho do couraçado é 5
     }
 
     @Override

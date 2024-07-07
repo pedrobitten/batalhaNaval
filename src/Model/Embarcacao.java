@@ -1,35 +1,60 @@
 package Model;
 
-public abstract class Embarcacao {
+public class Embarcacao {
     protected int tamanho;
-    protected int[] posicoes;
-    protected char direcao; // 'H' para horizontal, 'V' para vertical
+    protected char direcao;
+    protected int[][] partes;
 
     public Embarcacao(int tamanho, char direcao) {
         this.tamanho = tamanho;
-        this.posicoes = new int[tamanho];
         this.direcao = direcao;
+        this.partes = new int[tamanho][2]; // Inicializa as partes da embarcação
     }
 
-    public abstract boolean posicionar(char linha, int coluna, int[][] tabuleiro);
+    public boolean posicionar(char linha, int coluna, int[][] tabuleiro) {
+        int indiceLinha = linha - 'A';
+        if (indiceLinha < 0 || indiceLinha >= tabuleiro.length || coluna < 0 || coluna >= tabuleiro[0].length) {
+            return false; // Fora dos limites
+        }
 
-    // Método auxiliar para verificar e posicionar embarcações linearmente
-    protected boolean checkAndPlace(char linha, int coluna, int[][] tabuleiro, int code) {
-        int indice_linha = linha - 'A';
-        for (int i = 0; i < this.tamanho; i++) {
-            int delta = this.direcao == 'H' ? coluna + i : indice_linha + i;
-            if ((this.direcao == 'H' && (delta >= tabuleiro[0].length || tabuleiro[indice_linha][delta] != 0))
-                    || (this.direcao == 'V' && (delta >= tabuleiro.length || tabuleiro[delta][coluna] != 0))) {
-                return false;
+        // Verifica se pode posicionar a embarcação
+        for (int[] parte : partes) {
+            int x = indiceLinha + parte[0];
+            int y = coluna + parte[1];
+            if (x < 0 || x >= tabuleiro.length || y < 0 || y >= tabuleiro[0].length || tabuleiro[x][y] != 0) {
+                return false; // Posição inválida ou já ocupada
             }
         }
 
-        for (int i = 0; i < this.tamanho; i++) {
-            if (this.direcao == 'H') {
-                tabuleiro[indice_linha][coluna + i] = code;
-            } else {
-                tabuleiro[indice_linha + i][coluna] = code;
+        // Posiciona a embarcação
+        for (int[] parte : partes) {
+            int x = indiceLinha + parte[0];
+            int y = coluna + parte[1];
+            tabuleiro[x][y] = tamanho; // Marca a posição da embarcação com seu tamanho
+        }
+        return true;
+    }
+
+    protected boolean checkAndPlace(char linha, int coluna, int[][] tabuleiro, int codigo) {
+        // Implementação para verificar e posicionar a embarcação
+        // Isso é uma generalização do método posicionar
+        int indiceLinha = linha - 'A';
+        if (indiceLinha < 0 || indiceLinha >= tabuleiro.length || coluna < 0 || coluna >= tabuleiro[0].length) {
+            return false; // Fora dos limites
+        }
+
+        for (int[] parte : partes) {
+            int x = indiceLinha + parte[0];
+            int y = coluna + parte[1];
+            if (x < 0 || x >= tabuleiro.length || y < 0 || y >= tabuleiro[0].length || tabuleiro[x][y] != 0) {
+                return false; // Posição inválida ou já ocupada
             }
+        }
+
+        for (int[] parte : partes) {
+            int x = indiceLinha + parte[0];
+            int y = coluna + parte[1];
+            tabuleiro[x][y] = codigo;
         }
         return true;
     }

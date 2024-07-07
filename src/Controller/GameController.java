@@ -1,6 +1,7 @@
 package Controller;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import Model.Tabuleiro;
 import View.TelaMenu;
 import View.TelaInicio;
@@ -46,6 +47,7 @@ public class GameController {
     public void iniciarAtaques() {
         System.out.println("Iniciando etapa de ataques.");
         new TelaAtaques(tabuleiro, jogadorAtual, this);
+        verificarVitoria();
     }
 
     public void alternarJogador() {
@@ -55,5 +57,21 @@ public class GameController {
 
     public char getJogadorAtual() {
         return jogadorAtual;
+    }
+
+    public void verificarVitoria() {
+        if (tabuleiro.jogadorPerdeu('2')) {
+            JOptionPane.showMessageDialog(null, "Jogador 1 venceu!");
+            reiniciarJogo();
+        } else if (tabuleiro.jogadorPerdeu('1')) {
+            JOptionPane.showMessageDialog(null, "Jogador 2 venceu!");
+            reiniciarJogo();
+        }
+    }
+
+    public void reiniciarJogo() {
+        instance = null; // Reinicia o controlador
+        tabuleiro = new Tabuleiro(); // Cria um novo tabuleiro
+        new TelaMenu(this); // Volta para o menu
     }
 }
