@@ -145,33 +145,40 @@ public class TelaPosicionamento extends JPanel implements MouseListener, MouseMo
             }
         }
     }
+    
+    private void drawRotatedArma(Graphics2D g2d, Arma arma, int rotation) {
+        for (int[] offset : arma.offsets) {
+            int x = offset[0];
+            int y = offset[1];
+            switch (rotation) {
+                case 90:
+                    x = offset[1];
+                    y = -offset[0];
+                    break;
+                case 180:
+                    x = -offset[0];
+                    y = -offset[1];
+                    break;
+                case 270:
+                    x = -offset[1];
+                    y = offset[0];
+                    break;
+            }
+            g2d.fill(new Rectangle2D.Double(arma.shape.getX() + x * TILE_SIZE, arma.shape.getY() + y * TILE_SIZE, TILE_SIZE, TILE_SIZE));
+        }
+    }
 
     private void drawArmasDisponiveis(Graphics2D g2d) {
         for (Arma arma : armasDisponiveis) {
             if (arma.equals(armaSelecionada)) {
                 g2d.setColor(Color.GREEN);
+                drawRotatedArma(g2d, arma, currentRotation);
+                
             } else {
                 g2d.setColor(arma.color);
+                drawRotatedArma(g2d, arma, 0);
             }
-            for (int[] offset : arma.offsets) {
-                int x = offset[0];
-                int y = offset[1];
-                switch (currentRotation) {
-                    case 90:
-                        x = offset[1];
-                        y = -offset[0];
-                        break;
-                    case 180:
-                        x = -offset[0];
-                        y = -offset[1];
-                        break;
-                    case 270:
-                        x = -offset[1];
-                        y = offset[0];
-                        break;
-                }
-                g2d.fill(new Rectangle2D.Double(arma.shape.getX() + x * TILE_SIZE, arma.shape.getY() + y * TILE_SIZE, TILE_SIZE, TILE_SIZE));
-            }
+            
         }
     }
 
@@ -302,7 +309,15 @@ public class TelaPosicionamento extends JPanel implements MouseListener, MouseMo
     @Override
     public void mouseClicked(MouseEvent e) {
         if (SwingUtilities.isRightMouseButton(e) && isSelected) {
-            currentRotation = (currentRotation + 90) % 360;
+        	for (Arma arma : armasDisponiveis) {
+        		if (arma.equals(armaSelecionada)) {
+        			System.out.printf("Mouse clicado\n");
+        		
+        			currentRotation = (currentRotation + 90) % 360;
+        			break;
+        		}
+        	}
+        
             repaint();
         }
     }
