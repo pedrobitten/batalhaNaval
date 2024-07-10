@@ -15,7 +15,6 @@ public class TelaPosicionamento extends JPanel implements MouseListener, MouseMo
     private static final int GRID_SIZE = 15;
     private final JPanel armasPanel;
     private int[][] grid;
-    private final int[][] gridJogador1;
     private boolean isSelected;
     private final ArrayList<Arma> armasDisponiveis;
     private Arma armaSelecionada;
@@ -30,7 +29,6 @@ public class TelaPosicionamento extends JPanel implements MouseListener, MouseMo
         this.tabuleiro = tabuleiro;
         this.controller = controller;
         this.grid = new int[GRID_SIZE][GRID_SIZE];
-        this.gridJogador1 = new int[GRID_SIZE][GRID_SIZE];
         this.isSelected = false;
         this.currentRotation = 0;
         this.jogador1Posicionou = false;
@@ -50,6 +48,7 @@ public class TelaPosicionamento extends JPanel implements MouseListener, MouseMo
 
         armasDisponiveis = new ArrayList<>();
         inicializarArmas();
+    
 
         armasPanel.addMouseListener(this);
 
@@ -72,13 +71,14 @@ public class TelaPosicionamento extends JPanel implements MouseListener, MouseMo
         passarVezButton.addActionListener(e -> {
             if (!jogador1Posicionou) {
                 JOptionPane.showMessageDialog(null, "Passe a vez para o próximo jogador.");
-                salvarTabuleiroJogador1();
+                tabuleiro.salvarTabuleiroJogador1(grid);
                 grid = new int[GRID_SIZE][GRID_SIZE];
                 inicializarArmas();
                 passarVezButton.setEnabled(false);
                 jogador1Posicionou = true;
                 repaint();
             } else {
+            	tabuleiro.salvarTabuleiroJogador2(grid);
                 JOptionPane.showMessageDialog(null, "Todos os jogadores posicionaram suas embarcações. Salvando o jogo e iniciando a etapa de ataques!");
                 salvarEstadoDoJogo();
                 controller.iniciarAtaques();
@@ -121,12 +121,8 @@ public class TelaPosicionamento extends JPanel implements MouseListener, MouseMo
 
         armasDisponiveis.add(new Arma(new Rectangle2D.Double(10, 210, TILE_SIZE * 5, TILE_SIZE), 5, Color.BLACK, new int[][]{{0, 0}, {1, 0}, {2, 0}, {3, 0}, {4, 0}}));
     }
+	
 
-    private void salvarTabuleiroJogador1() {
-        for (int i = 0; i < GRID_SIZE; i++) {
-            System.arraycopy(grid[i], 0, gridJogador1[i], 0, GRID_SIZE);
-        }
-    }
 
     private void drawGrid(Graphics2D g2d) {
         for (int i = 0; i <= GRID_SIZE; i++) {
@@ -311,8 +307,6 @@ public class TelaPosicionamento extends JPanel implements MouseListener, MouseMo
         if (SwingUtilities.isRightMouseButton(e) && isSelected) {
         	for (Arma arma : armasDisponiveis) {
         		if (arma.equals(armaSelecionada)) {
-        			System.out.printf("Mouse clicado\n");
-        		
         			currentRotation = (currentRotation + 90) % 360;
         			break;
         		}
