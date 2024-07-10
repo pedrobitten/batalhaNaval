@@ -20,6 +20,18 @@ public class Tabuleiro {
         }
         notifyObservers(); // Notifica os observadores após a criação dos tabuleiros
     }
+    
+    public void salvarTabuleiroJogador1(int [][]vetor) {
+        for (int i = 0; i < 15; i++) {
+            System.arraycopy(vetor[i], 0, tabuleiro_P1[i], 0, 15);
+        }
+    }
+    
+    public void salvarTabuleiroJogador2(int [][]vetor) {
+        for (int i = 0; i < 15; i++) {
+            System.arraycopy(vetor[i], 0, tabuleiro_P2[i], 0, 15);
+        }
+    }
 
     public void imprimeTabuleiroP1() {
         System.out.println("\tTabuleiro P1");
