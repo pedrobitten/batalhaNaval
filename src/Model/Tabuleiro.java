@@ -70,7 +70,7 @@ public class Tabuleiro {
         if (tabuleiroAlvo[indice_linha][coluna] > 0) {
             tabuleiroAlvo[indice_linha][coluna] = -1; // Marca como atingido
             notifyObservers(); // Notifica os observadores após o ataque
-            if (verificarDerrota(jogador == '1' ? '2' : '1')) {
+            if (verificarDerrota(jogador == '2' ? '1' : '2')) {
                 return "Hit! Player " + jogador + " wins!";
             }
             return "Hit!";
@@ -83,7 +83,7 @@ public class Tabuleiro {
     }    
 
     public boolean verificarDerrota(char jogador) {
-        int[][] tabuleiro = (jogador == '1') ? tabuleiro_P1 : tabuleiro_P2;
+        int[][] tabuleiro = (jogador == '1') ? tabuleiro_P2 : tabuleiro_P1;
         for (int[] row : tabuleiro) {
             for (int cell : row) {
                 if (cell > 0) {

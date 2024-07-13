@@ -51,6 +51,7 @@ public class GameController {
     public void alternarJogador() {
         jogadorAtual = (jogadorAtual == '1') ? '2' : '1';
         System.out.println("Jogador alternado para: " + jogadorAtual);
+        verificarVitoria();
     }
 
     public char getJogadorAtual() {
@@ -68,6 +69,7 @@ public class GameController {
     }
 
     public void reiniciarJogo() {
-        iniciarNovoJogo(jogador1, jogador2); // Reinicia o jogo com os mesmos jogadores
+        instance = new GameController(); // Reinicia o controlador
+        new TelaMenu(instance); // Volta para o menu inicial
     }
 }

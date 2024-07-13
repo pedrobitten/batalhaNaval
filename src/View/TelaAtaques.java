@@ -1,7 +1,7 @@
 package View;
 
-import Model.Tabuleiro;
 import Controller.GameController;
+import Model.Tabuleiro;
 import java.awt.*;
 import javax.swing.*;
 
@@ -73,7 +73,9 @@ public class TelaAtaques extends JFrame {
                 char linha = i;
                 int coluna = j;
                 if (jogador == '2') {
-                    cellButton.addActionListener(e -> realizarAtaque(linha, coluna, cellButton));
+                    cellButton.addActionListener(e -> realizarAtaque(linha, coluna, cellButton, '2'));
+                } else {
+                    cellButton.addActionListener(e -> realizarAtaque(linha, coluna, cellButton, '1'));
                 }
                 if (jogador == '1') {
                     botoesTabuleiroP1[i - 'A'][j] = cellButton; // Armazena o botão na matriz do jogador 1
@@ -86,9 +88,9 @@ public class TelaAtaques extends JFrame {
         return tabuleiroPanel;
     }
 
-    private void realizarAtaque(char linha, int coluna, JButton cellButton) {
+    private void realizarAtaque(char linha, int coluna, JButton cellButton, char tabuleiroJogador) {
         if (ataquesRestantes > 0) {
-            String resultado = tabuleiro.atacar(linha, coluna, jogadorAtual == '1' ? '2' : '1');
+            String resultado = tabuleiro.atacar(linha, coluna, tabuleiroJogador);
             cellButton.setText(resultado.equals("Hit!") ? "X" : "O");
             cellButton.setEnabled(false);
             if (resultado.equals("Hit!")) {
@@ -99,7 +101,7 @@ public class TelaAtaques extends JFrame {
             ataquesRestantes--;
             resultadoLabel.setText("Jogador " + jogadorAtual + " - Ataques restantes: " + ataquesRestantes);
 
-            if (tabuleiro.jogadorPerdeu(jogadorAtual == '1' ? '2' : '1')) {
+            if (tabuleiro.jogadorPerdeu(tabuleiroJogador)) {
                 JOptionPane.showMessageDialog(this, "Jogador " + jogadorAtual + " venceu!");
                 int resposta = JOptionPane.showConfirmDialog(this, "Deseja iniciar uma nova partida?", "Fim de Jogo", JOptionPane.YES_NO_OPTION);
                 if (resposta == JOptionPane.YES_OPTION) {
