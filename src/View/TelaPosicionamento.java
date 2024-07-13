@@ -71,8 +71,11 @@ public class TelaPosicionamento extends JPanel implements MouseListener, MouseMo
             if (!jogador1Posicionou) {
                 JOptionPane.showMessageDialog(null, "Passe a vez para o próximo jogador.");
                 tabuleiro.salvarTabuleiroJogador1(grid);
-                resetEstado();
+                grid = new int[GRID_SIZE][GRID_SIZE];
+                inicializarArmas();
+                passarVezButton.setEnabled(false);
                 jogador1Posicionou = true;
+                repaint();
             } else {
                 tabuleiro.salvarTabuleiroJogador2(grid);
                 JOptionPane.showMessageDialog(null, "Todos os jogadores posicionaram suas embarcações. Salvando o jogo e iniciando a etapa de ataques!");
@@ -130,7 +133,7 @@ public class TelaPosicionamento extends JPanel implements MouseListener, MouseMo
             for (int j = 0; j < GRID_SIZE; j++) {
                 if (grid[i][j] > 0) {
                     g2d.setColor(Color.ORANGE);
-                    g2d.fill(new Rectangle2D.Double(j * TILE_SIZE, i * TILE_SIZE, TILE_SIZE, TILE_SIZE));
+                    g2d.fill(new Rectangle2D.Double(i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE, TILE_SIZE));
                 }
             }
         }
@@ -192,7 +195,7 @@ public class TelaPosicionamento extends JPanel implements MouseListener, MouseMo
                     newY += offset[1];
                     break;
             }
-            if (newX >= GRID_SIZE || newY >= GRID_SIZE || newX < 0 || newY < 0 || grid[newY][newX] > 0) { // Corrigido grid[newX][newY] para grid[newY][newX]
+            if (newX >= GRID_SIZE || newY >= GRID_SIZE || newX < 0 || newY < 0 || grid[newX][newY] > 0) {
                 return false;
             }
         }
@@ -261,8 +264,8 @@ public class TelaPosicionamento extends JPanel implements MouseListener, MouseMo
                     newY += offset[1];
                     break;
             }
-            System.out.println("Posicionando em: " + newY + ", " + newX); // Corrigido para newY e newX
-            grid[newY][newX] = armaSelecionada.length; // Corrigido para newY e newX
+            System.out.println("Posicionando em: " + newX + ", " + newY); // Adicione este print para depuração
+            grid[newX][newY] = armaSelecionada.length;
         }
 
         armasDisponiveis.remove(armaSelecionada);
@@ -270,17 +273,8 @@ public class TelaPosicionamento extends JPanel implements MouseListener, MouseMo
         isSelected = false;
         currentRotation = 0;
         repaint();
-        JOptionPane.showMessageDialog(null, "Arma posicionada com sucesso.");
+        //JOptionPane.showMessageDialog(null, "Arma posicionada com sucesso.");
         verificarPosicionamentoCompleto();
-    }
-
-    private void resetEstado() {
-        grid = new int[GRID_SIZE][GRID_SIZE];
-        inicializarArmas();
-        isSelected = false;
-        armaSelecionada = null;
-        currentRotation = 0;
-        repaint();
     }
 
     private void carregarEstadoTabuleiro() {
@@ -305,7 +299,7 @@ public class TelaPosicionamento extends JPanel implements MouseListener, MouseMo
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if (SwingUtilities.isRightMouseButton(e) && isSelected) {
+        if (SwingUtilities.isRightMouseButton(e) && isSelected && armaSelecionada != null) {
             currentRotation = (currentRotation + 90) % 360;
             repaint();
         }
@@ -321,7 +315,7 @@ public class TelaPosicionamento extends JPanel implements MouseListener, MouseMo
                 armaSelecionada = arma;
                 isSelected = true;
                 repaint();
-                JOptionPane.showMessageDialog(null, "Arma disponível selecionada.");
+                //JOptionPane.showMessageDialog(null, "Arma disponível selecionada.");
                 found = true;
                 break;
             }
