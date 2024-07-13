@@ -11,6 +11,9 @@ public class TelaAtaques extends JFrame {
     private int ataquesRestantes;
     private JLabel resultadoLabel;
     private final GameController controller;
+    private JButton[][] botoesTabuleiroP1; // Matriz de botões para atualizar a interface facilmente
+    private JButton[][] botoesTabuleiroP2; // Matriz de botões para o tabuleiro do jogador 2
+    private JButton passarVezButton;
 
     public TelaAtaques(Tabuleiro tabuleiro, char jogadorAtual, GameController controller) {
         this.tabuleiro = tabuleiro;
@@ -39,7 +42,7 @@ public class TelaAtaques extends JFrame {
         resultadoLabel = new JLabel("Jogador " + jogadorAtual + " - Ataques restantes: " + ataquesRestantes);
         resultadoLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-        JButton passarVezButton = new JButton("Passar Vez");
+        passarVezButton = new JButton("Passar Vez");
         passarVezButton.setEnabled(false);
         passarVezButton.addActionListener(e -> trocarJogador());
 
@@ -51,10 +54,18 @@ public class TelaAtaques extends JFrame {
         add(southPanel, BorderLayout.SOUTH);
 
         setVisible(true);
+
+        atualizarInteratividade();
     }
 
     private JPanel criarTabuleiroPanel(char jogador) {
         JPanel tabuleiroPanel = new JPanel(new GridLayout(15, 15));
+        if (jogador == '1') {
+            botoesTabuleiroP1 = new JButton[15][15]; // Inicializa a matriz de botões para o jogador 1
+        } else {
+            botoesTabuleiroP2 = new JButton[15][15]; // Inicializa a matriz de botões para o jogador 2
+        }
+
         for (char i = 'A'; i <= 'O'; i++) {
             for (int j = 0; j < 15; j++) {
                 JButton cellButton = new JButton();
@@ -63,6 +74,11 @@ public class TelaAtaques extends JFrame {
                 int coluna = j;
                 if (jogador == '2') {
                     cellButton.addActionListener(e -> realizarAtaque(linha, coluna, cellButton));
+                }
+                if (jogador == '1') {
+                    botoesTabuleiroP1[i - 'A'][j] = cellButton; // Armazena o botão na matriz do jogador 1
+                } else {
+                    botoesTabuleiroP2[i - 'A'][j] = cellButton; // Armazena o botão na matriz do jogador 2
                 }
                 tabuleiroPanel.add(cellButton);
             }
@@ -75,10 +91,15 @@ public class TelaAtaques extends JFrame {
             String resultado = tabuleiro.atacar(linha, coluna, jogadorAtual == '1' ? '2' : '1');
             cellButton.setText(resultado.equals("Hit!") ? "X" : "O");
             cellButton.setEnabled(false);
+            if (resultado.equals("Hit!")) {
+                cellButton.setBackground(Color.RED); // Acerto
+            } else {
+                cellButton.setBackground(Color.BLUE); // Erro
+            }
             ataquesRestantes--;
             resultadoLabel.setText("Jogador " + jogadorAtual + " - Ataques restantes: " + ataquesRestantes);
 
-            if (tabuleiro.verificarDerrota(jogadorAtual == '1' ? '2' : '1')) {
+            if (tabuleiro.jogadorPerdeu(jogadorAtual == '1' ? '2' : '1')) {
                 JOptionPane.showMessageDialog(this, "Jogador " + jogadorAtual + " venceu!");
                 int resposta = JOptionPane.showConfirmDialog(this, "Deseja iniciar uma nova partida?", "Fim de Jogo", JOptionPane.YES_NO_OPTION);
                 if (resposta == JOptionPane.YES_OPTION) {
@@ -87,8 +108,9 @@ public class TelaAtaques extends JFrame {
                 } else {
                     System.exit(0);
                 }
-            } else if (ataquesRestantes == 0) {
-                JButton passarVezButton = (JButton) ((JPanel) getContentPane().getComponent(1)).getComponent(1);
+            }
+
+            if (ataquesRestantes == 0) {
                 passarVezButton.setEnabled(true);
             }
         }
@@ -97,7 +119,25 @@ public class TelaAtaques extends JFrame {
     private void trocarJogador() {
         ataquesRestantes = 3;
         controller.alternarJogador();
-        new TelaAtaques(tabuleiro, controller.getJogadorAtual(), controller);
-        dispose();
+        jogadorAtual = controller.getJogadorAtual(); // Atualiza o jogador atual
+        resultadoLabel.setText("Jogador " + jogadorAtual + " - Ataques restantes: " + ataquesRestantes);
+        passarVezButton.setEnabled(false);
+
+        atualizarInteratividade();
+    }
+
+    private void atualizarInteratividade() {
+        boolean jogador1Atacando = (jogadorAtual == '1');
+        for (int i = 0; i < 15; i++) {
+            for (int j = 0; j < 15; j++) {
+                botoesTabuleiroP1[i][j].setEnabled(false); // Desativa o tabuleiro do jogador 1
+                botoesTabuleiroP2[i][j].setEnabled(false); // Desativa o tabuleiro do jogador 2
+                if (jogador1Atacando) {
+                    botoesTabuleiroP2[i][j].setEnabled(true); // Ativa o tabuleiro do jogador 2
+                } else {
+                    botoesTabuleiroP1[i][j].setEnabled(true); // Ativa o tabuleiro do jogador 1
+                }
+            }
+        }
     }
 }

@@ -7,6 +7,6 @@ public class Submarino extends Embarcacao {
 
     @Override
     public boolean posicionar(char linha, int coluna, int[][] tabuleiro) {
-        return checkAndPlace(linha, coluna, tabuleiro, 5); // O código '5' representa um submarino
+        return super.posicionar(linha, coluna, tabuleiro, 5); // O código '5' representa um submarino
     }
 }

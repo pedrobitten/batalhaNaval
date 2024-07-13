@@ -1,12 +1,11 @@
 package Controller;
 
+import Model.Tabuleiro;
+import View.TelaAtaques;
+import View.TelaMenu;
+import View.TelaPosicionamento;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import Model.Tabuleiro;
-import View.TelaMenu;
-import View.TelaInicio;
-import View.TelaPosicionamento;
-import View.TelaAtaques;
 
 public class GameController {
     private static GameController instance; // Singleton instance
@@ -47,7 +46,6 @@ public class GameController {
     public void iniciarAtaques() {
         System.out.println("Iniciando etapa de ataques.");
         new TelaAtaques(tabuleiro, jogadorAtual, this);
-        verificarVitoria();
     }
 
     public void alternarJogador() {
@@ -70,8 +68,6 @@ public class GameController {
     }
 
     public void reiniciarJogo() {
-        instance = null; // Reinicia o controlador
-        tabuleiro = new Tabuleiro(); // Cria um novo tabuleiro
-        new TelaMenu(this); // Volta para o menu
+        iniciarNovoJogo(jogador1, jogador2); // Reinicia o jogo com os mesmos jogadores
     }
 }

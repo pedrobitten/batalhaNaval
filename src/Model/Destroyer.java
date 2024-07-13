@@ -7,6 +7,6 @@ public class Destroyer extends Embarcacao {
 
     @Override
     public boolean posicionar(char linha, int coluna, int[][] tabuleiro) {
-        return checkAndPlace(linha, coluna, tabuleiro, 4); // O código '4' representa um destroyer
+        return super.posicionar(linha, coluna, tabuleiro, 4); // O código '4' representa um destroyer
     }
 }

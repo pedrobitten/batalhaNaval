@@ -19,7 +19,7 @@ public class EmbarcacaoTeste {
         couracado = new Couracado('H');
         cruzador = new Cruzador('H');
         destroyer = new Destroyer('H');
-        hidroaviao = new Hidroaviao();
+        hidroaviao = new Hidroaviao('H'); // Passa a direção como parâmetro
         submarino = new Submarino('H');
     }
 

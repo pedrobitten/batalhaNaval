@@ -35,9 +35,11 @@ public class Embarcacao {
         return true;
     }
 
-    protected boolean checkAndPlace(char linha, int coluna, int[][] tabuleiro, int codigo) {
-        // Implementação para verificar e posicionar a embarcação
-        // Isso é uma generalização do método posicionar
+    public boolean posicionar(char linha, int coluna, int[][] tabuleiro, int codigo) {
+        return posicionarComCodigo(linha, coluna, tabuleiro, codigo);
+    }
+
+    private boolean posicionarComCodigo(char linha, int coluna, int[][] tabuleiro, int codigo) {
         int indiceLinha = linha - 'A';
         if (indiceLinha < 0 || indiceLinha >= tabuleiro.length || coluna < 0 || coluna >= tabuleiro[0].length) {
             return false; // Fora dos limites

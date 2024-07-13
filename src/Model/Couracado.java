@@ -7,6 +7,6 @@ public class Couracado extends Embarcacao {
 
     @Override
     public boolean posicionar(char linha, int coluna, int[][] tabuleiro) {
-        return checkAndPlace(linha, coluna, tabuleiro, 1); // O código '1' representa um couraçado
+        return super.posicionar(linha, coluna, tabuleiro, 1); // O código '1' representa um couraçado
     }
 }

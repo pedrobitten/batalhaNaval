@@ -7,6 +7,6 @@ public class Cruzador extends Embarcacao {
 
     @Override
     public boolean posicionar(char linha, int coluna, int[][] tabuleiro) {
-        return checkAndPlace(linha, coluna, tabuleiro, 3); // O código '3' representa um cruzador
+        return super.posicionar(linha, coluna, tabuleiro, 3); // O código '3' representa um cruzador
     }
 }
