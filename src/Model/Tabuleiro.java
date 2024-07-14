@@ -1,12 +1,15 @@
 package Model;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Scanner;  // Adicione esta linha
+import java.util.List;
+import java.util.Scanner;
 
 public class Tabuleiro {
     private final int[][] tabuleiro_P1 = new int[15][15];
     private final int[][] tabuleiro_P2 = new int[15][15];
+    private final List<Observer> observers = new ArrayList<>(); // Adicione uma lista de observadores
 
     public void criacaoTabuleiros() {
         for (int[] row : tabuleiro_P1) {
@@ -15,18 +18,21 @@ public class Tabuleiro {
         for (int[] row : tabuleiro_P2) {
             Arrays.fill(row, 0);
         }
+        notifyObservers(); // Notifique os observadores após a criação dos tabuleiros
     }
 
     public void salvarTabuleiroJogador1(int[][] vetor) {
         for (int i = 0; i < 15; i++) {
             System.arraycopy(vetor[i], 0, tabuleiro_P1[i], 0, 15);
         }
+        notifyObservers(); // Notifique os observadores após salvar o tabuleiro do jogador 1
     }
 
     public void salvarTabuleiroJogador2(int[][] vetor) {
         for (int i = 0; i < 15; i++) {
             System.arraycopy(vetor[i], 0, tabuleiro_P2[i], 0, 15);
         }
+        notifyObservers(); // Notifique os observadores após salvar o tabuleiro do jogador 2
     }
 
     public void imprimeTabuleiroP1() {
@@ -53,6 +59,7 @@ public class Tabuleiro {
     public boolean insereEmbarcacao(Embarcacao embarcacao, char linha, int coluna, char jogador) {
         int[][] tabuleiro = (jogador == '1') ? tabuleiro_P1 : tabuleiro_P2;
         boolean sucesso = embarcacao.posicionar(linha, coluna, tabuleiro, embarcacao.tamanho); // Usar tamanho como código
+        notifyObservers(); // Notifique os observadores após a inserção da embarcação
         return sucesso;
     }
 
@@ -66,6 +73,7 @@ public class Tabuleiro {
 
         if (tabuleiroAlvo[indice_linha][coluna] > 0) {
             tabuleiroAlvo[indice_linha][coluna] = -1; // Marca como atingido
+            notifyObservers(); // Notifique os observadores após o ataque
             System.out.println("Hit! Tabuleiro após ataque:");
             imprimirTabuleiro(tabuleiroAlvo);
             if (verificarDerrota(jogador == '1' ? '2' : '1')) {
@@ -74,6 +82,7 @@ public class Tabuleiro {
             return "Hit!";
         } else if (tabuleiroAlvo[indice_linha][coluna] == 0) {
             tabuleiroAlvo[indice_linha][coluna] = -2; // Marca como tiro na água
+            notifyObservers(); // Notifique os observadores após o ataque
             System.out.println("Miss! Tabuleiro após ataque:");
             imprimirTabuleiro(tabuleiroAlvo);
             return "Miss!";
@@ -114,6 +123,7 @@ public class Tabuleiro {
                 }
                 out.println();
             }
+            notifyObservers(); // Notifique os observadores após salvar o estado
         } catch (IOException e) {
             System.err.println("Erro ao salvar o estado do jogo: " + e.getMessage());
         }
@@ -137,6 +147,7 @@ public class Tabuleiro {
                 }
             }
             validarEstadoTabuleiro(); // Validar estado do tabuleiro após carregar
+            notifyObservers(); // Notifique os observadores após carregar o estado
         } catch (FileNotFoundException e) {
             System.err.println("Erro ao carregar o estado do jogo: Arquivo não encontrado.");
         } catch (Exception e) {
@@ -160,5 +171,22 @@ public class Tabuleiro {
         int[][] tabuleiro = (jogador == '1') ? tabuleiro_P1 : tabuleiro_P2;
         int indice_linha = linha - 'A';
         return tabuleiro[indice_linha][coluna];
+    }
+
+    // Método para adicionar observadores
+    public void addObserver(Observer observer) {
+        observers.add(observer);
+    }
+
+    // Método para remover observadores
+    public void removeObserver(Observer observer) {
+        observers.remove(observer);
+    }
+
+    // Método para notificar observadores
+    public void notifyObservers() {
+        for (Observer observer : observers) {
+            observer.update();
+        }
     }
 }
