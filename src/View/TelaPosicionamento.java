@@ -90,7 +90,7 @@ public class TelaPosicionamento extends JPanel implements MouseListener, MouseMo
         requestFocusInWindow();
 
         // Registrar-se como observador do tabuleiro
-        tabuleiro.addObserver(this);
+        //tabuleiro.addObserver(this);
 
         // Carregar o estado do tabuleiro na grid se estiver carregando um jogo salvo
         carregarEstadoTabuleiro();

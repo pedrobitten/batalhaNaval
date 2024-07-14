@@ -1,51 +1,77 @@
 package View;
 
-import java.io.File;
-import javax.swing.*;
 import Controller.GameController;
-import Model.Tabuleiro;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class TelaMenu extends JFrame {
     private GameController controller;
 
     public TelaMenu(GameController controller) {
         this.controller = controller;
+        initUI();
+    }
+
+    private void initUI() {
         setTitle("Batalha Naval - Menu");
-        setSize(300, 150);
+        setSize(400, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
         JPanel panel = new JPanel();
-        JButton newGameButton = new JButton("Novo Jogo");
-        JButton continueGameButton = new JButton("Continuar Jogo");
+        panel.setLayout(new GridLayout(3, 1));
 
-        newGameButton.addActionListener(e -> {
-            new TelaInicio(controller);
-            dispose();
-        });
-
-        continueGameButton.addActionListener(e -> {
-            JFileChooser fileChooser = new JFileChooser();
-            int result = fileChooser.showOpenDialog(null);
-            if (result == JFileChooser.APPROVE_OPTION) {
-                File selectedFile = fileChooser.getSelectedFile();
-                carregarJogo(selectedFile);
+        JButton novoJogoButton = new JButton("Novo Jogo");
+        novoJogoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                iniciarNovoJogo();
             }
         });
 
-        panel.add(newGameButton);
-        panel.add(continueGameButton);
+        JButton carregarJogoButton = new JButton("Carregar Jogo");
+        carregarJogoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                carregarJogo();
+            }
+        });
+
+        JButton sairButton = new JButton("Sair");
+        sairButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
+
+        panel.add(novoJogoButton);
+        panel.add(carregarJogoButton);
+        panel.add(sairButton);
 
         add(panel);
+
         setVisible(true);
     }
 
-    private void carregarJogo(File file) {
-        JOptionPane.showMessageDialog(this, "Carregando o jogo do arquivo: " + file.getAbsolutePath());
+    private void iniciarNovoJogo() {
+        String jogador1 = JOptionPane.showInputDialog(this, "Nome do Jogador 1:");
+        String jogador2 = JOptionPane.showInputDialog(this, "Nome do Jogador 2:");
+        if (jogador1 != null && jogador2 != null && !jogador1.isEmpty() && !jogador2.isEmpty()) {
+            controller.iniciarNovoJogo(jogador1, jogador2);
+            dispose(); // Fecha a tela de menu
+        }
+    }
 
-        Tabuleiro tabuleiro = new Tabuleiro();
-        tabuleiro.carregarEstado(file.getAbsolutePath());
-        controller.iniciarAtaques();
-        dispose();
+    private void carregarJogo() {
+        JFileChooser fileChooser = new JFileChooser();
+        int result = fileChooser.showOpenDialog(this);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            String caminhoArquivo = fileChooser.getSelectedFile().getAbsolutePath();
+            controller.carregarJogoExistente(caminhoArquivo);
+            dispose(); // Fecha a tela de menu
+        }
     }
 }

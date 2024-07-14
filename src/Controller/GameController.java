@@ -19,7 +19,7 @@ public class GameController {
         System.out.println("GameController iniciado.");
         this.tabuleiro = new Tabuleiro();
         this.jogadorAtual = '1';
-        new TelaMenu(this);
+        new TelaMenu(this); // Inicializa a tela de menu ao iniciar o controlador
     }
 
     public static GameController getInstance() {
@@ -51,7 +51,6 @@ public class GameController {
     public void alternarJogador() {
         jogadorAtual = (jogadorAtual == '1') ? '2' : '1';
         System.out.println("Jogador alternado para: " + jogadorAtual);
-        verificarVitoria();
     }
 
     public char getJogadorAtual() {
@@ -71,5 +70,10 @@ public class GameController {
     public void reiniciarJogo() {
         instance = new GameController(); // Reinicia o controlador
         new TelaMenu(instance); // Volta para o menu inicial
+    }
+
+    public void carregarJogoExistente(String caminhoArquivo) {
+        tabuleiro.carregarEstado(caminhoArquivo);
+        iniciarAtaques();
     }
 }

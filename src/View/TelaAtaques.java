@@ -29,35 +29,42 @@ public class TelaAtaques extends JFrame {
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-
+    
         setLayout(new BorderLayout());
-
+    
         JPanel panelCentral = new JPanel(new GridLayout(1, 2));
-
+    
         JPanel tabuleiroJogador1Panel = criarTabuleiroPanel('1');
         JPanel tabuleiroJogador2Panel = criarTabuleiroPanel('2');
-
+    
         panelCentral.add(tabuleiroJogador1Panel);
         panelCentral.add(tabuleiroJogador2Panel);
-
+    
         resultadoLabel = new JLabel("Jogador " + jogadorAtual + " - Ataques restantes: " + ataquesRestantes);
         resultadoLabel.setHorizontalAlignment(SwingConstants.CENTER);
-
+    
         passarVezButton = new JButton("Passar Vez");
         passarVezButton.setEnabled(false);
         passarVezButton.addActionListener(e -> trocarJogador());
-
+    
         JPanel southPanel = new JPanel(new BorderLayout());
         southPanel.add(resultadoLabel, BorderLayout.CENTER);
         southPanel.add(passarVezButton, BorderLayout.EAST);
-
+    
         add(panelCentral, BorderLayout.CENTER);
         add(southPanel, BorderLayout.SOUTH);
-
+    
         setVisible(true);
-
+    
         atualizarInteratividade();
+    
+        // Adicione log para mostrar o estado do tabuleiro
+        System.out.println("Estado inicial do tabuleiro P1:");
+        tabuleiro.imprimeTabuleiroP1();
+        System.out.println("Estado inicial do tabuleiro P2:");
+        tabuleiro.imprimeTabuleiroP2();
     }
+    
 
     private JPanel criarTabuleiroPanel(char jogador) {
         JPanel tabuleiroPanel = new JPanel(new GridLayout(GRID_SIZE, GRID_SIZE));
@@ -142,25 +149,5 @@ public class TelaAtaques extends JFrame {
                 }
             }
         }
-    }
-
-    private int[][] rotacionarGrid(int[][] grid) {
-        int[][] rotatedGrid = new int[GRID_SIZE][GRID_SIZE];
-        for (int i = 0; i < GRID_SIZE; i++) {
-            for (int j = 0; j < GRID_SIZE; j++) {
-                rotatedGrid[j][GRID_SIZE - 1 - i] = grid[i][j];
-            }
-        }
-        return rotatedGrid;
-    }
-
-    private int[][] espelharGrid(int[][] grid) {
-        int[][] espelhadaGrid = new int[GRID_SIZE][GRID_SIZE];
-        for (int i = 0; i < GRID_SIZE; i++) {
-            for (int j = 0; j < GRID_SIZE; j++) {
-                espelhadaGrid[i][j] = grid[i][GRID_SIZE - 1 - j];
-            }
-        }
-        return espelhadaGrid;
     }
 }
