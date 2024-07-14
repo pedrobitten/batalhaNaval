@@ -69,14 +69,14 @@ public class TelaPosicionamento extends JPanel implements MouseListener, MouseMo
         passarVezButton.setEnabled(false);
         passarVezButton.addActionListener(e -> {
             if (!jogador1Posicionou) {
-                tabuleiro.salvarTabuleiroJogador1(rotacionarGrid(grid));
+                tabuleiro.salvarTabuleiroJogador1(espelharGrid(rotacionarGrid(grid)));
                 grid = new int[GRID_SIZE][GRID_SIZE];
                 inicializarArmas();
                 passarVezButton.setEnabled(false);
                 jogador1Posicionou = true;
                 repaint();
             } else {
-                tabuleiro.salvarTabuleiroJogador2(rotacionarGrid(grid));
+                tabuleiro.salvarTabuleiroJogador2(espelharGrid(rotacionarGrid(grid)));
                 salvarEstadoDoJogo();
                 controller.iniciarAtaques();
             }
@@ -298,10 +298,20 @@ public class TelaPosicionamento extends JPanel implements MouseListener, MouseMo
         int[][] rotatedGrid = new int[GRID_SIZE][GRID_SIZE];
         for (int i = 0; i < GRID_SIZE; i++) {
             for (int j = 0; j < GRID_SIZE; j++) {
-                rotatedGrid[j][i] = grid[GRID_SIZE - 1 - i][j];
+                rotatedGrid[j][GRID_SIZE - 1 - i] = grid[i][j];
             }
         }
         return rotatedGrid;
+    }
+
+    private int[][] espelharGrid(int[][] grid) {
+        int[][] espelhadaGrid = new int[GRID_SIZE][GRID_SIZE];
+        for (int i = 0; i < GRID_SIZE; i++) {
+            for (int j = 0; j < GRID_SIZE; j++) {
+                espelhadaGrid[i][j] = grid[i][GRID_SIZE - 1 - j];
+            }
+        }
+        return espelhadaGrid;
     }
 
     @Override

@@ -148,9 +148,19 @@ public class TelaAtaques extends JFrame {
         int[][] rotatedGrid = new int[GRID_SIZE][GRID_SIZE];
         for (int i = 0; i < GRID_SIZE; i++) {
             for (int j = 0; j < GRID_SIZE; j++) {
-                rotatedGrid[j][i] = grid[GRID_SIZE - 1 - i][j];
+                rotatedGrid[j][GRID_SIZE - 1 - i] = grid[i][j];
             }
         }
         return rotatedGrid;
+    }
+
+    private int[][] espelharGrid(int[][] grid) {
+        int[][] espelhadaGrid = new int[GRID_SIZE][GRID_SIZE];
+        for (int i = 0; i < GRID_SIZE; i++) {
+            for (int j = 0; j < GRID_SIZE; j++) {
+                espelhadaGrid[i][j] = grid[i][GRID_SIZE - 1 - j];
+            }
+        }
+        return espelhadaGrid;
     }
 }
