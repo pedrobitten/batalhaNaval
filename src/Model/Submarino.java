@@ -5,7 +5,6 @@ public class Submarino extends Embarcacao {
         super(1, direcao); // Tamanho do submarino é 1
     }
 
-    @Override
     public boolean posicionar(char linha, int coluna, int[][] tabuleiro) {
         return super.posicionar(linha, coluna, tabuleiro, 5); // O código '5' representa um submarino
     }

@@ -17,19 +17,27 @@ public class Embarcacao {
             return false; // Fora dos limites
         }
 
-        // Verifica se pode posicionar a embarcação
-        for (int[] parte : partes) {
-            int x = indiceLinha + parte[0];
-            int y = coluna + parte[1];
+        for (int i = 0; i < tamanho; i++) {
+            int x = indiceLinha;
+            int y = coluna;
+            if (direcao == 'H') {
+                y += i;
+            } else {
+                x += i;
+            }
             if (x < 0 || x >= tabuleiro.length || y < 0 || y >= tabuleiro[0].length || tabuleiro[x][y] != 0) {
                 return false; // Posição inválida ou já ocupada
             }
         }
 
-        // Posiciona a embarcação
-        for (int[] parte : partes) {
-            int x = indiceLinha + parte[0];
-            int y = coluna + parte[1];
+        for (int i = 0; i < tamanho; i++) {
+            int x = indiceLinha;
+            int y = coluna;
+            if (direcao == 'H') {
+                y += i;
+            } else {
+                x += i;
+            }
             tabuleiro[x][y] = tamanho; // Marca a posição da embarcação com seu tamanho
         }
         return true;
@@ -45,17 +53,27 @@ public class Embarcacao {
             return false; // Fora dos limites
         }
 
-        for (int[] parte : partes) {
-            int x = indiceLinha + parte[0];
-            int y = coluna + parte[1];
+        for (int i = 0; i < tamanho; i++) {
+            int x = indiceLinha;
+            int y = coluna;
+            if (direcao == 'H') {
+                y += i;
+            } else {
+                x += i;
+            }
             if (x < 0 || x >= tabuleiro.length || y < 0 || y >= tabuleiro[0].length || tabuleiro[x][y] != 0) {
                 return false; // Posição inválida ou já ocupada
             }
         }
 
-        for (int[] parte : partes) {
-            int x = indiceLinha + parte[0];
-            int y = coluna + parte[1];
+        for (int i = 0; i < tamanho; i++) {
+            int x = indiceLinha;
+            int y = coluna;
+            if (direcao == 'H') {
+                y += i;
+            } else {
+                x += i;
+            }
             tabuleiro[x][y] = codigo;
         }
         return true;

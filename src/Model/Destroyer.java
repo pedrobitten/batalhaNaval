@@ -5,7 +5,6 @@ public class Destroyer extends Embarcacao {
         super(2, direcao); // Tamanho do destroyer é 2
     }
 
-    @Override
     public boolean posicionar(char linha, int coluna, int[][] tabuleiro) {
         return super.posicionar(linha, coluna, tabuleiro, 4); // O código '4' representa um destroyer
     }

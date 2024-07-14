@@ -69,16 +69,14 @@ public class TelaPosicionamento extends JPanel implements MouseListener, MouseMo
         passarVezButton.setEnabled(false);
         passarVezButton.addActionListener(e -> {
             if (!jogador1Posicionou) {
-                JOptionPane.showMessageDialog(null, "Passe a vez para o próximo jogador.");
-                tabuleiro.salvarTabuleiroJogador1(grid);
+                tabuleiro.salvarTabuleiroJogador1(rotacionarGrid(grid));
                 grid = new int[GRID_SIZE][GRID_SIZE];
                 inicializarArmas();
                 passarVezButton.setEnabled(false);
                 jogador1Posicionou = true;
                 repaint();
             } else {
-                tabuleiro.salvarTabuleiroJogador2(grid);
-                JOptionPane.showMessageDialog(null, "Todos os jogadores posicionaram suas embarcações. Salvando o jogo e iniciando a etapa de ataques!");
+                tabuleiro.salvarTabuleiroJogador2(rotacionarGrid(grid));
                 salvarEstadoDoJogo();
                 controller.iniciarAtaques();
             }
@@ -273,7 +271,6 @@ public class TelaPosicionamento extends JPanel implements MouseListener, MouseMo
         isSelected = false;
         currentRotation = 0;
         repaint();
-        //JOptionPane.showMessageDialog(null, "Arma posicionada com sucesso.");
         verificarPosicionamentoCompleto();
     }
 
@@ -297,6 +294,16 @@ public class TelaPosicionamento extends JPanel implements MouseListener, MouseMo
         }
     }
 
+    private int[][] rotacionarGrid(int[][] grid) {
+        int[][] rotatedGrid = new int[GRID_SIZE][GRID_SIZE];
+        for (int i = 0; i < GRID_SIZE; i++) {
+            for (int j = 0; j < GRID_SIZE; j++) {
+                rotatedGrid[j][GRID_SIZE - 1 - i] = grid[i][j];
+            }
+        }
+        return rotatedGrid;
+    }
+
     @Override
     public void mouseClicked(MouseEvent e) {
         if (SwingUtilities.isRightMouseButton(e) && isSelected && armaSelecionada != null) {
@@ -315,7 +322,6 @@ public class TelaPosicionamento extends JPanel implements MouseListener, MouseMo
                 armaSelecionada = arma;
                 isSelected = true;
                 repaint();
-                //JOptionPane.showMessageDialog(null, "Arma disponível selecionada.");
                 found = true;
                 break;
             }
@@ -329,7 +335,6 @@ public class TelaPosicionamento extends JPanel implements MouseListener, MouseMo
                 if (armaSelecionada != null) {
                     posicionarArma(x, y);
                 }
-                JOptionPane.showMessageDialog(null, "Posição do tabuleiro selecionada (" + x + ", " + y + ").");
             }
         }
     }
@@ -355,7 +360,6 @@ public class TelaPosicionamento extends JPanel implements MouseListener, MouseMo
             armaSelecionada = null;
             isSelected = false;
             repaint();
-            JOptionPane.showMessageDialog(null, "Posicionamento da arma cancelado.");
         }
     }
 

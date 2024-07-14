@@ -5,7 +5,6 @@ public class Cruzador extends Embarcacao {
         super(4, direcao); // Tamanho do cruzador é 4
     }
 
-    @Override
     public boolean posicionar(char linha, int coluna, int[][] tabuleiro) {
         return super.posicionar(linha, coluna, tabuleiro, 3); // O código '3' representa um cruzador
     }

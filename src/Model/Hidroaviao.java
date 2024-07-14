@@ -5,7 +5,6 @@ public class Hidroaviao extends Embarcacao {
         super(3, direcao); // Tamanho do hidroavião é 3
     }
 
-    @Override
     public boolean posicionar(char linha, int coluna, int[][] tabuleiro) {
         return super.posicionar(linha, coluna, tabuleiro, 2); // O código '2' representa um hidroavião
     }

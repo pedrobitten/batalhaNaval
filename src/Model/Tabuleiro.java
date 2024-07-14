@@ -20,13 +20,13 @@ public class Tabuleiro {
         }
         notifyObservers(); // Notifica os observadores após a criação dos tabuleiros
     }
-    
+
     public void salvarTabuleiroJogador1(int[][] vetor) {
         for (int i = 0; i < 15; i++) {
             System.arraycopy(vetor[i], 0, tabuleiro_P1[i], 0, 15);
         }
     }
-    
+
     public void salvarTabuleiroJogador2(int[][] vetor) {
         for (int i = 0; i < 15; i++) {
             System.arraycopy(vetor[i], 0, tabuleiro_P2[i], 0, 15);
@@ -56,7 +56,7 @@ public class Tabuleiro {
 
     public boolean insereEmbarcacao(Embarcacao embarcacao, char linha, int coluna, char jogador) {
         int[][] tabuleiro = (jogador == '1') ? tabuleiro_P1 : tabuleiro_P2;
-        boolean sucesso = embarcacao.posicionar(linha, coluna, tabuleiro);
+        boolean sucesso = embarcacao.posicionar(linha, coluna, tabuleiro, embarcacao.tamanho); // Usar tamanho como código
         if (sucesso) {
             notifyObservers(); // Notifica os observadores após a inserção da embarcação
         }
@@ -66,11 +66,11 @@ public class Tabuleiro {
     public String atacar(char linha, int coluna, char jogador) {
         int[][] tabuleiroAlvo = (jogador == '1') ? tabuleiro_P2 : tabuleiro_P1;
         int indice_linha = linha - 'A';
-    
+
         if (tabuleiroAlvo[indice_linha][coluna] > 0) {
             tabuleiroAlvo[indice_linha][coluna] = -1; // Marca como atingido
             notifyObservers(); // Notifica os observadores após o ataque
-            if (verificarDerrota(jogador == '2' ? '1' : '2')) {
+            if (verificarDerrota(jogador)) {
                 return "Hit! Player " + jogador + " wins!";
             }
             return "Hit!";
@@ -80,7 +80,7 @@ public class Tabuleiro {
             return "Miss!";
         }
         return "Already Hit!";
-    }    
+    }
 
     public boolean verificarDerrota(char jogador) {
         int[][] tabuleiro = (jogador == '1') ? tabuleiro_P2 : tabuleiro_P1;

@@ -59,8 +59,8 @@ public class TestaTabuleiro {
         Tabuleiro novoTabuleiro = new Tabuleiro();
         novoTabuleiro.carregarEstado(arquivoTeste);
 
-        // Não é possível verificar diretamente os arrays, então verifique o comportamento:
-        // Assumimos que se um ataque no mesmo local retorna os mesmos resultados, o estado foi mantido.
-        assertEquals("Os resultados do ataque devem ser consistentes após o carregamento.", tabuleiro.atacar('A', 0, '2'), novoTabuleiro.atacar('A', 0, '2'));
+        // Verificar se os tabuleiros são iguais após o carregamento
+        assertArrayEquals("O tabuleiro P1 deve ser igual após o carregamento", tabuleiro.getEstado('1'), novoTabuleiro.getEstado('1'));
+        assertArrayEquals("O tabuleiro P2 deve ser igual após o carregamento", tabuleiro.getEstado('2'), novoTabuleiro.getEstado('2'));
     }
 }

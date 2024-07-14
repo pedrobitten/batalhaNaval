@@ -6,6 +6,7 @@ import java.awt.*;
 import javax.swing.*;
 
 public class TelaAtaques extends JFrame {
+    private static final int GRID_SIZE = 15;
     private final Tabuleiro tabuleiro;
     private char jogadorAtual;
     private int ataquesRestantes;
@@ -59,23 +60,23 @@ public class TelaAtaques extends JFrame {
     }
 
     private JPanel criarTabuleiroPanel(char jogador) {
-        JPanel tabuleiroPanel = new JPanel(new GridLayout(15, 15));
+        JPanel tabuleiroPanel = new JPanel(new GridLayout(GRID_SIZE, GRID_SIZE));
         if (jogador == '1') {
-            botoesTabuleiroP1 = new JButton[15][15]; // Inicializa a matriz de botões para o jogador 1
+            botoesTabuleiroP1 = new JButton[GRID_SIZE][GRID_SIZE]; // Inicializa a matriz de botões para o jogador 1
         } else {
-            botoesTabuleiroP2 = new JButton[15][15]; // Inicializa a matriz de botões para o jogador 2
+            botoesTabuleiroP2 = new JButton[GRID_SIZE][GRID_SIZE]; // Inicializa a matriz de botões para o jogador 2
         }
 
-        for (char i = 'A'; i <= 'O'; i++) {
-            for (int j = 0; j < 15; j++) {
+        for (char i = 'A'; i < 'A' + GRID_SIZE; i++) {
+            for (int j = 0; j < GRID_SIZE; j++) {
                 JButton cellButton = new JButton();
                 cellButton.setPreferredSize(new Dimension(30, 30));
                 char linha = i;
                 int coluna = j;
                 if (jogador == '2') {
-                    cellButton.addActionListener(e -> realizarAtaque(linha, coluna, cellButton, '2'));
-                } else {
                     cellButton.addActionListener(e -> realizarAtaque(linha, coluna, cellButton, '1'));
+                } else {
+                    cellButton.addActionListener(e -> realizarAtaque(linha, coluna, cellButton, '2'));
                 }
                 if (jogador == '1') {
                     botoesTabuleiroP1[i - 'A'][j] = cellButton; // Armazena o botão na matriz do jogador 1
@@ -88,9 +89,9 @@ public class TelaAtaques extends JFrame {
         return tabuleiroPanel;
     }
 
-    private void realizarAtaque(char linha, int coluna, JButton cellButton, char tabuleiroJogador) {
+    private void realizarAtaque(char linha, int coluna, JButton cellButton, char jogadorAdversario) {
         if (ataquesRestantes > 0) {
-            String resultado = tabuleiro.atacar(linha, coluna, tabuleiroJogador);
+            String resultado = tabuleiro.atacar(linha, coluna, jogadorAdversario);
             cellButton.setText(resultado.equals("Hit!") ? "X" : "O");
             cellButton.setEnabled(false);
             if (resultado.equals("Hit!")) {
@@ -101,7 +102,7 @@ public class TelaAtaques extends JFrame {
             ataquesRestantes--;
             resultadoLabel.setText("Jogador " + jogadorAtual + " - Ataques restantes: " + ataquesRestantes);
 
-            if (tabuleiro.jogadorPerdeu(tabuleiroJogador)) {
+            if (tabuleiro.jogadorPerdeu(jogadorAdversario)) {
                 JOptionPane.showMessageDialog(this, "Jogador " + jogadorAtual + " venceu!");
                 int resposta = JOptionPane.showConfirmDialog(this, "Deseja iniciar uma nova partida?", "Fim de Jogo", JOptionPane.YES_NO_OPTION);
                 if (resposta == JOptionPane.YES_OPTION) {
@@ -130,8 +131,8 @@ public class TelaAtaques extends JFrame {
 
     private void atualizarInteratividade() {
         boolean jogador1Atacando = (jogadorAtual == '1');
-        for (int i = 0; i < 15; i++) {
-            for (int j = 0; j < 15; j++) {
+        for (int i = 0; i < GRID_SIZE; i++) {
+            for (int j = 0; j < GRID_SIZE; j++) {
                 botoesTabuleiroP1[i][j].setEnabled(false); // Desativa o tabuleiro do jogador 1
                 botoesTabuleiroP2[i][j].setEnabled(false); // Desativa o tabuleiro do jogador 2
                 if (jogador1Atacando) {
@@ -141,5 +142,15 @@ public class TelaAtaques extends JFrame {
                 }
             }
         }
+    }
+
+    private int[][] rotacionarGrid(int[][] grid) {
+        int[][] rotatedGrid = new int[GRID_SIZE][GRID_SIZE];
+        for (int i = 0; i < GRID_SIZE; i++) {
+            for (int j = 0; j < GRID_SIZE; j++) {
+                rotatedGrid[j][GRID_SIZE - 1 - i] = grid[i][j];
+            }
+        }
+        return rotatedGrid;
     }
 }
